@@ -6,11 +6,11 @@ import { RightSidebarModule } from './right-sidebar/right-sidebar.module';
 import { EditorModule } from './editor/editor.module';
 import { TerminalModule } from './terminal/terminal.module';
 import { EditorService } from './shared/editor.service';
-import { CommonModule } from '@angular/common';
+
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, CommonModule, TaskbarModule, LeftSidebarModule, RightSidebarModule, EditorModule, TerminalModule],
+  imports: [RouterOutlet, TaskbarModule, LeftSidebarModule, RightSidebarModule, EditorModule, TerminalModule],
   providers: [EditorService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
