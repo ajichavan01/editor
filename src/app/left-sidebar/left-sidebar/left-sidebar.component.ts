@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './left-sidebar.component.scss'
 })
 export class LeftSidebarComponent {
-
+ items = Array.from({ length: 20 }, (_, i) => { return {name: `Item ${i + 1}` }; });
 }

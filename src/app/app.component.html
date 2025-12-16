@@ -1,30 +1,34 @@
 <div class="container">
-  <app-taskbar></app-taskbar>
-  <div class="middle">
-
-    <!-- Left sidebar -->
-    @if (editorService.isLeftSidebarVisible()) {
-    <div class="enter-container" animate.enter="enter-animation">
-      <app-left-sidebar></app-left-sidebar>
+  <div class="main-content">
+    
+    <!-- Taskbar -->
+    <div class="taskbar">
+      <app-taskbar></app-taskbar>
     </div>
-    }
 
-  <!-- Editor -->
-  <app-editor></app-editor>
+    <div class="middle">
+      <!-- Left sidebar -->
+      @if (editorService.isLeftSidebarVisible()) {
+      <app-left-sidebar animate.enter="enter-animation-left"></app-left-sidebar>
+      }
 
-  <!--  -->
-  @if (editorService.isRightSidebarVisible()) {
-    <div class="enter-container" animate.enter="enter-animation">
-      <app-right-sidebar></app-right-sidebar>
+      <!-- Editor -->
+      <app-editor></app-editor>
+
+      <!--  -->
+      @if (editorService.isRightSidebarVisible()) {
+      <app-right-sidebar animate.enter="enter-animation-right"></app-right-sidebar>
+      }
+    </div>
+
+    <!-- Terminal -->
+    @if (editorService.isTerminalVisible()) {
+    <div class="terminal-container">
+      <div class="terminal">
+        <app-terminal></app-terminal>
+      </div>
     </div>
     }
   </div>
-
-  @if (editorService.isTerminalVisible()) {
-  <div class="enter-container" animate.enter="enter-animation">
-    <app-terminal></app-terminal>
-  </div>
-  }
+  <router-outlet />
 </div>
-
-<router-outlet />
