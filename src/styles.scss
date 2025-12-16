@@ -1,4 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* Remove default margins and fit to viewport */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .enter-container {
   border: 1px solid #dddddd;
   margin-top: 1em;
