@@ -3,21 +3,30 @@
     display: block;
 }
 
-.container {
+.main-content {
     display: grid;
     grid-template-areas:
         "taskbar"
         "middle"
         "terminal";
     grid-template-rows: auto 1fr auto;
-    height: 100vh;
+    grid-row-gap: 0.25em;
+    height: calc(100vh - 2em);
+    padding: 1em;
+}
+
+.taskbar {
+    grid-area: "taskbar";
 }
 
 .middle {
-    display: grid;
-    grid-template-areas: 
-        "left-sidebar editor right-sidebar";
-    grid-template-columns: auto 1fr auto;
+    grid-area: "middle";
+    display: flex;
+    flex: 1 auto 1;
+    column-gap: 0.25em;
+    overflow: hidden;
 }
 
-
+.terminal-container {
+    grid-area: "terminal";
+}
