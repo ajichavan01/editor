@@ -29,6 +29,7 @@ jobs:
       - name: Run unit tests
         env:
           CI: true
+          CHROME_BIN: /usr/bin/chromium-browser
         run: |
-          # Run tests in non-watch mode so the job exits.
-          npm test -- --watch=false || (echo "Karma tests failed" && exit 1)
+          # Run tests in headless mode (no X11 display needed) so the job exits.
+          npm test -- --watch=false --browsers=ChromeHeadless || (echo "Karma tests failed" && exit 1)
