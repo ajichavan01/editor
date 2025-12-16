@@ -1,0 +1,23 @@
+
+:host {
+    display: block;
+}
+
+.container {
+    display: grid;
+    grid-template-areas:
+        "taskbar"
+        "middle"
+        "terminal";
+    grid-template-rows: auto 1fr auto;
+    height: 100vh;
+}
+
+.middle {
+    display: grid;
+    grid-template-areas: 
+        "left-sidebar editor right-sidebar";
+    grid-template-columns: auto 1fr auto;
+}
+
+

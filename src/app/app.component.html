@@ -1,9 +1,30 @@
+<div class="container">
+  <app-taskbar></app-taskbar>
+  <div class="middle">
 
+    <!-- Left sidebar -->
+    @if (editorService.isLeftSidebarVisible()) {
+    <div class="enter-container" animate.enter="enter-animation">
+      <app-left-sidebar></app-left-sidebar>
+    </div>
+    }
 
-<app-taskbar></app-taskbar>
-<app-left-sidebar></app-left-sidebar>
-<app-editor></app-editor>
-<app-right-sidebar></app-right-sidebar>
-<app-terminal></app-terminal>
+  <!-- Editor -->
+  <app-editor></app-editor>
+
+  <!--  -->
+  @if (editorService.isRightSidebarVisible()) {
+    <div class="enter-container" animate.enter="enter-animation">
+      <app-right-sidebar></app-right-sidebar>
+    </div>
+    }
+  </div>
+
+  @if (editorService.isTerminalVisible()) {
+  <div class="enter-container" animate.enter="enter-animation">
+    <app-terminal></app-terminal>
+  </div>
+  }
+</div>
 
 <router-outlet />
