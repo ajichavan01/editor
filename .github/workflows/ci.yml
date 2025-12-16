@@ -31,5 +31,5 @@ jobs:
           CI: true
           CHROME_BIN: /usr/bin/chromium-browser
         run: |
-          # Run tests in headless mode (no X11 display needed) so the job exits.
-          npm test -- --watch=false --browsers=ChromeHeadless || (echo "Karma tests failed" && exit 1)
+          # Run tests in headless mode with --no-sandbox for restricted CI environments
+          npm test -- --watch=false --browsers=ChromeHeadless --no-sandbox
