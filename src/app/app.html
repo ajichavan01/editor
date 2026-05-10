@@ -1,0 +1,12 @@
+{{ title() }}
+
+<button [routerLink]="'/posts'" (click)="showPosts.set(!showPosts())">
+  {{ showPosts() ? 'Hide posts' : 'Show posts' }}
+</button>
+
+<button [routerLink]="'/comments'" (click)="showComments.set(!showComments())">
+  {{ showComments() ? 'Hide comments' : 'Show comments' }}
+</button>
+
+
+<router-outlet />

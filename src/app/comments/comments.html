@@ -1,0 +1,10 @@
+@if (showComments()) {
+  @for (comment of comments(); track comment.id) {
+    <div class="comment">
+      <h3>{{ comment.name }}</h3>
+      <p>{{ comment.body }}</p>
+    </div>
+  }
+} @else {
+  <p>Comments are hidden. Click "Show Comments"</p>
+}
