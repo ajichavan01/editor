@@ -13,3 +13,16 @@ export interface Posts {
   title: string;
   body: string;
 }
+
+export interface ProfileFormValue {
+  name: string;
+  age: number;
+  password: string;
+}
+
+export interface StoredProfile {
+  id: string;
+  name: string;
+  age: number;
+  createdAt: string;
+}

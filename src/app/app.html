@@ -1,12 +1,58 @@
 {{ title() }}
 
-<button [routerLink]="'/posts'" (click)="showPosts.set(!showPosts())">
+<button [routerLink]="'/posts'" (click)="togglePosts()">
   {{ showPosts() ? 'Hide posts' : 'Show posts' }}
 </button>
 
-<button [routerLink]="'/comments'" (click)="showComments.set(!showComments())">
+<button [routerLink]="'/comments'" (click)="toggleComments()">
   {{ showComments() ? 'Hide comments' : 'Show comments' }}
 </button>
 
+<form [formRoot]="profileForm" (submit)="submitProfile($event)">
+  <label>
+    Name
+    <input type="text" [formField]="profileForm.name" />
+  </label>
+  @if (profileForm.name().touched() && profileForm.name().invalid()) {
+    <p>Name is required.</p>
+  }
+
+  <label>
+    Age
+    <input type="number" [formField]="profileForm.age" />
+  </label>
+  @if (profileForm.age().touched() && profileForm.age().invalid()) {
+    <p>Age must be at least 1.</p>
+  }
+
+  <label>
+    Password
+    <input type="password" [formField]="profileForm.password" />
+  </label>
+  @if (profileForm.password().touched() && profileForm.password().invalid()) {
+    <p>Password is required and must be at least 8 characters.</p>
+  }
+
+  <button type="submit" [disabled]="profileForm().invalid() || isSavingProfile()">
+    {{ isSavingProfile() ? 'Saving...' : 'Submit profile' }}
+  </button>
+</form>
+
+@if (formMessage()) {
+  <p>{{ formMessage() }}</p>
+}
+
+<pre>{{ profileModel() | json }}</pre>
+
+@if (savedProfiles().length) {
+  <h2>Saved profiles</h2>
+  @for (profile of savedProfiles(); track profile.id) {
+    <article>
+      <h3>{{ profile.name }}</h3>
+      <p>Age: {{ profile.age }}</p>
+      <p>Saved: {{ profile.createdAt }}</p>
+    </article>
+  }
+}
 
 <router-outlet />
