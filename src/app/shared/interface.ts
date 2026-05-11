@@ -26,3 +26,7 @@ export interface StoredProfile {
   age: number;
   createdAt: string;
 }
+
+export interface PasswordReuseCheck {
+  isSamePassword: boolean;
+}

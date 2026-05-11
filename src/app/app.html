@@ -8,13 +8,15 @@
   {{ showComments() ? 'Hide comments' : 'Show comments' }}
 </button>
 
-<form [formRoot]="profileForm" (submit)="submitProfile($event)">
+<form [formRoot]="profileForm">
   <label>
     Name
     <input type="text" [formField]="profileForm.name" />
   </label>
   @if (profileForm.name().touched() && profileForm.name().invalid()) {
-    <p>Name is required.</p>
+  @for (error of profileForm.name().errors(); track error.kind) {
+  <p>{{ error.message }}</p>
+  }
   }
 
   <label>
@@ -22,7 +24,9 @@
     <input type="number" [formField]="profileForm.age" />
   </label>
   @if (profileForm.age().touched() && profileForm.age().invalid()) {
-    <p>Age must be at least 1.</p>
+  @for (error of profileForm.age().errors(); track error.kind) {
+  <p>{{ error.message }}</p>
+  }
   }
 
   <label>
@@ -30,7 +34,9 @@
     <input type="password" [formField]="profileForm.password" />
   </label>
   @if (profileForm.password().touched() && profileForm.password().invalid()) {
-    <p>Password is required and must be at least 8 characters.</p>
+  @for (error of profileForm.password().errors(); track error.kind) {
+  <p>{{ error.message }}</p>
+  }
   }
 
   <button type="submit" [disabled]="profileForm().invalid() || isSavingProfile()">
@@ -39,20 +45,20 @@
 </form>
 
 @if (formMessage()) {
-  <p>{{ formMessage() }}</p>
+<p>{{ formMessage() }}</p>
 }
 
 <pre>{{ profileModel() | json }}</pre>
 
 @if (savedProfiles().length) {
-  <h2>Saved profiles</h2>
-  @for (profile of savedProfiles(); track profile.id) {
-    <article>
-      <h3>{{ profile.name }}</h3>
-      <p>Age: {{ profile.age }}</p>
-      <p>Saved: {{ profile.createdAt }}</p>
-    </article>
-  }
+<h2>Saved profiles</h2>
+@for (profile of savedProfiles(); track profile.id) {
+<article>
+  <h3>{{ profile.name }}</h3>
+  <p>Age: {{ profile.age }}</p>
+  <p>Saved: {{ profile.createdAt }}</p>
+</article>
+}
 }
 
 <router-outlet />

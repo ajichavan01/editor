@@ -134,7 +134,44 @@ function readProfiles() {
     .all();
 }
 
+function findProfileByName(name) {
+  return db
+    .prepare(
+      `
+        SELECT
+          id,
+          name,
+          age,
+          password_hash AS passwordHash,
+          password_salt AS passwordSalt,
+          created_at AS createdAt
+        FROM profiles
+        WHERE lower(name) = lower(?)
+        ORDER BY created_at DESC
+        LIMIT 1
+      `
+    )
+    .get(name);
+}
+
 function saveProfile(profile) {
+  const existingProfile = findProfileByName(profile.name);
+
+  if (existingProfile) {
+    db.prepare(
+      `
+        UPDATE profiles
+        SET age = ?, password_hash = ?, password_salt = ?
+        WHERE id = ?
+      `
+    ).run(profile.age, profile.passwordHash, profile.passwordSalt, existingProfile.id);
+
+    return {
+      ...existingProfile,
+      age: profile.age,
+    };
+  }
+
   db.prepare(
     `
       INSERT INTO profiles (id, name, age, password_hash, password_salt, created_at)
@@ -148,6 +185,8 @@ function saveProfile(profile) {
     profile.passwordSalt,
     profile.createdAt
   );
+
+  return profile;
 }
 
 function readRequestBody(req) {
@@ -170,6 +209,33 @@ function readRequestBody(req) {
   });
 }
 
+function hashPassword(password, salt) {
+  return crypto.scryptSync(password, salt, 64);
+}
+
+function isSamePassword(input) {
+  const name = String(input.name ?? '').trim();
+  const password = String(input.password ?? '');
+
+  if (!name || !password) {
+    return false;
+  }
+
+  const profile = findProfileByName(name);
+
+  if (!profile?.passwordHash || !profile?.passwordSalt) {
+    return false;
+  }
+
+  const existingHash = Buffer.from(profile.passwordHash, 'hex');
+  const candidateHash = hashPassword(password, profile.passwordSalt);
+
+  return (
+    existingHash.length === candidateHash.length &&
+    crypto.timingSafeEqual(existingHash, candidateHash)
+  );
+}
+
 function createProfile(input) {
   const name = String(input.name ?? '').trim();
   const age = Number(input.age);
@@ -180,7 +246,7 @@ function createProfile(input) {
   }
 
   const passwordSalt = crypto.randomBytes(16).toString('hex');
-  const passwordHash = crypto.scryptSync(password, passwordSalt, 64).toString('hex');
+  const passwordHash = hashPassword(password, passwordSalt).toString('hex');
 
   return {
     id: crypto.randomUUID(),
@@ -190,6 +256,19 @@ function createProfile(input) {
     passwordSalt,
     createdAt: new Date().toISOString(),
   };
+}
+
+async function handlePasswordCheck(req, res) {
+  if (req.method !== 'POST') {
+    sendText(res, 405, 'Method Not Allowed');
+    return;
+  }
+
+  try {
+    sendJson(res, 200, { isSamePassword: isSamePassword(await readRequestBody(req)) });
+  } catch (error) {
+    sendText(res, 400, 'Invalid request');
+  }
 }
 
 function toPublicProfile(profile) {
@@ -220,8 +299,7 @@ async function handleProfiles(req, res) {
       return;
     }
 
-    saveProfile(profile);
-    sendJson(res, 201, toPublicProfile(profile));
+    sendJson(res, 201, toPublicProfile(saveProfile(profile)));
   } catch (error) {
     sendText(res, 400, 'Invalid request');
   }
@@ -230,6 +308,16 @@ async function handleProfiles(req, res) {
 async function apiMiddleware(req, res, next) {
   const requestPath = new URL(req.url, `http://${req.headers.host}`).pathname;
   const routeUrl = apiRoutes[requestPath];
+
+  if (requestPath === '/api/profiles/password-check') {
+    if (req.method === 'OPTIONS') {
+      sendOptions(res);
+      return;
+    }
+
+    await handlePasswordCheck(req, res);
+    return;
+  }
 
   if (requestPath === '/api/profiles') {
     if (req.method === 'OPTIONS') {

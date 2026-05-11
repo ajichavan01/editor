@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { ProfileFormValue, StoredProfile } from '../shared/interface';
+import { PasswordReuseCheck, ProfileFormValue, StoredProfile } from '../shared/interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,6 +11,10 @@ export class ProfileService {
 
   createProfile(profile: ProfileFormValue) {
     return this.http.post<StoredProfile>(`${this.apiBaseUrl}/profiles`, profile);
+  }
+
+  checkPasswordReuse(profile: Pick<ProfileFormValue, 'name' | 'password'>) {
+    return this.http.post<PasswordReuseCheck>(`${this.apiBaseUrl}/profiles/password-check`, profile);
   }
 
   getProfiles() {

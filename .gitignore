@@ -3,3 +3,4 @@ src/server/data/*.db
 src/server/data/*.db-shm
 src/server/data/*.db-wal
 .angular
+dist
